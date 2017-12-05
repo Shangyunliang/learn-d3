@@ -1,5 +1,5 @@
 {
-  "name": "egghead-d3v4",
+  "name": "learn-d3",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,15 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bclinkinbeard/egghead-d3v4.git"
+    "url": "git+https://github.com/Shangyunliang/learn-d3.git"
   },
   "keywords": [],
-  "author": "Ben Clinkinbeard <ben.clinkinbeard@gmail.com> (http://benclinkinbeard.com/)",
+  "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bclinkinbeard/egghead-d3v4/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/bclinkinbeard/egghead-d3v4#readme",
+  "homepage": "",
   "devDependencies": {
+    "browser-sync": "^2.18.13"
   }
 }
