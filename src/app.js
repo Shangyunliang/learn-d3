@@ -49,3 +49,15 @@ console.log(quantizeScaleColor(40))
 console.log(quantizeScaleColor(80))
 
 console.log(quantizeScaleColor.invertExtent('red'))
+
+
+
+drawLine('scaleOrdinal')
+
+var ordinalScale = d3.scaleOrdinal()
+  .domain(['poor', 'good', 'great'])
+  .range(['red', 'white', 'green'])
+
+console.log(ordinalScale('good'))
+console.log(ordinalScale('great'))
+console.log(ordinalScale('green'))
