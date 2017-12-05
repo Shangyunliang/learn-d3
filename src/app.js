@@ -1,63 +1,31 @@
-function drawLine(lineString) {
-  console.log(`------------------------${lineString}--------------------------`);
-}
-
-drawLine('scaleLinear')
-var linearScale = d3.scaleLinear()
-  .domain([0, 100])
-  .range([0, 600])
-  .clamp(true)
-
-
-console.log(linearScale(-20))
-console.log(linearScale(50))
-console.log(linearScale(100))
-
-console.log(linearScale.invert(300));
-
-drawLine('scaleTime')
-// 注意时间月份
-var timeScale = d3.scaleTime()
-  .domain([new Date(2016,0,1), new Date(2016,9,31)])
-  .range([0, 100])
-  .clamp(true)
+d3.json('data/data.json', (data) =>{
+  const max = d3.max(data, (d) => {
+    return d.age
+  })
+  console.log(`max : ${max}`);
   
-console.log(timeScale(new Date()))
-console.log(timeScale(new Date(2016,0,1)))
+  const min = d3.min(data, (d) => {
+    return d.age
+  })
+  console.log(`min : ${min}`);
+  
+  const extent = d3.extent(data, (d) => d.age)
+  console.log(`extent : ${extent}`);
+  
+  const scale = d3.scaleLinear()
+    .domain(extent)
+    .range([0, 600])
+    .clamp(true)
+  console.log(scale(37));
+  
+  var ages = d3.set(data, (d) => d.age) 
+  console.log(ages.values());
+})
 
+d3.csv('data/data.csv', (data) =>{
+  console.log(data);
+})
 
-console.log(timeScale.invert(50))
-console.log(timeScale.invert(0))
-console.log(timeScale.invert(100));
-
-drawLine('scaleQuantize')
-var quantizeScale = d3.scaleQuantize()
-  .domain([0, 100])
-  .range([0, 600])
-
-console.log(quantizeScale(50))
-console.log(quantizeScale(40))
-console.log(quantizeScale(60))
-
-drawLine('scaleQuantize-Color')
-var quantizeScaleColor = d3.scaleQuantize()
-  .domain([0, 100])
-  .range(['red', 'white', 'green'])
-
-console.log(quantizeScaleColor(20))
-console.log(quantizeScaleColor(40))
-console.log(quantizeScaleColor(80))
-
-console.log(quantizeScaleColor.invertExtent('red'))
-
-
-
-drawLine('scaleOrdinal')
-
-var ordinalScale = d3.scaleOrdinal()
-  .domain(['poor', 'good', 'great'])
-  .range(['red', 'white', 'green'])
-
-console.log(ordinalScale('good'))
-console.log(ordinalScale('great'))
-console.log(ordinalScale('green'))
+d3.csv('data/data.tsv', (data) =>{
+  console.log(data);
+})
