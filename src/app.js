@@ -56,30 +56,17 @@ var scores = [
 
 
 var update = d3.select('.chart')
-  .selectAll('div')
-  .data(scores, function(d){
-    // 例子中该方法走七次， 2次是默认已经创建的div  d为undefined
-    // 其他五次是数据
-    console.log(d)
-    return d ?  d.name : this.innerText
-  })
-  .style('color', 'blue')
-  
-var enter = update.enter()
-  .append('div')
-  .text((d) => d.name)
-  .style('color', 'green')  
-  
-update.exit().remove()
-
-update.merge(enter)
-  .style('width', d => d.score * 10 + 'px')
-  .style('height', '50px')
-  .style('background', 'lightgreen')
-  .style('border', '1px solid black')
-  .style('text-transform', 'upperCase')
-  
-  
+  .append('svg')
+    .style('width', '200px')
+    .style('height', '300px')
+  .selectAll('rect')
+  .data(scores)
+  .enter()
+    .append('rect')
+    .attr('y', (d, i) => i * 33)
+    .text((d) => d.name)
+    .style('width', d => d.score)
+    .classed('bar', true)
   
   
   
