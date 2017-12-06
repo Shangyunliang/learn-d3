@@ -55,20 +55,23 @@ var scores = [
 ];
 
 
-var update = d3.select('.chart')
+var bar = d3.select('.chart')
   .append('svg')
     .style('width', '200px')
     .style('height', '300px')
-  .selectAll('rect')
+  .selectAll('g')
   .data(scores)
-  .enter()
-    .append('rect')
-    .attr('y', (d, i) => i * 33)
-    .text((d) => d.name)
+  .enter() 
+    .append('g')
+    .attr('transform', (d, i) => 'translate(0, ' + i * 33 + ')')
+  
+  bar.append('rect')
     .style('width', d => d.score)
-    .classed('bar', true)
-  
-  
+    .attr('class', 'bar')
+    
+  bar.append('text')
+    .attr('y', 20)
+    .text((d) => d.name)
   
   
   
