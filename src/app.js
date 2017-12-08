@@ -7,14 +7,19 @@
 // g中内容的就可以正常使用上面计算的出来的width 和 height了
 
 
-const margin = {top: 20, right: 20, bottom: 40, left: 40}
-let width = 525 - margin.left - margin.right
-let height = 625 - margin.top - margin.bottom
+const margin = {top: 20, right: 30, bottom: 30, left: 30}
+let width = 400 - margin.left - margin.right
+let height = 600 - margin.top - margin.bottom
+
+// let fullWidth = width + margin.left + margin.right
+// let fullHeight = height + margin.top + margin.bottom
 
 const svg = d3.select('.chart')
   .append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
+    // .attr('viewBox', `0 0 ${fullWidth * 2} ${fullHeight * 2}`)
+    .call(responsivefy)
   .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
@@ -49,3 +54,23 @@ svg
   .append('g')
     .attr('transform', `translate(0, ${height})`)
   .call(xAxis)
+
+function responsivefy(svg){
+  // get container + svg aspepct ratio
+  var container = d3.select(svg.node().parentNode)
+  var width = parseInt(svg.style('width'))
+  var height = parseInt(svg.style('height'))
+  var aspect = width / height;
+
+   svg.attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMinYMid')
+      .call(resize)
+
+   d3.select(window).on(`resize.${container.attr('id')}`, resize)
+
+   function resize() {
+      var targetWidth = parseInt(container.style('width'))
+      svg.attr('width', targetWidth)
+      svg.attr('height', Math.round(targetWidth / aspect))
+   }
+}
