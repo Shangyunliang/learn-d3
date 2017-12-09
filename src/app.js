@@ -8,7 +8,7 @@
 
 
 const margin = {top: 20, right: 30, bottom: 60, left: 30}
-let width = 400 - margin.left - margin.right
+let width = 600 - margin.left - margin.right
 let height = 600 - margin.top - margin.bottom
 
 // let fullWidth = width + margin.left + margin.right
@@ -24,62 +24,63 @@ const svg = d3.select('.chart')
     .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
 d3.json('/data.json', function(err, data){
-  // 创建一个线性比例尺
-  const yScale = d3.scaleLinear()
-    .domain(d3.extent(data, d => d.expectancy))
-    .range([height, 0])
-    .nice()
 
-  // 将这个比例尺转换成纵坐标
-  const yAxis = d3.axisLeft(yScale)
-    // .ticks(5) // 5个坐标
-    // .tickValues([10,20,40,88,100]) // 这些值必须展示
-    // .ticks(5, '%') 百分比 domain最大为1
-  svg.call(yAxis)
+    var parseTime = d3.timeParse('%Y/%m/%d')
 
-  const xScale = d3.scaleLinear()
-    .domain(d3.extent(data, d => d.cost))
-    .range([0, width])
-    .nice()
-
-  const xAxis = d3.axisBottom(xScale)
-    .ticks(5)
-
-  svg
-    .append('g')      // 这里之所以要从新添加一个g， 是因为axisBottom只是创建一个锯齿朝下的底部坐标样子， 并不能代表在底部。
-      .attr('transform', `translate(0, ${height})`)
-    .call(xAxis)
-
-  var rScale = d3.scaleSqrt()
-    .domain([0, d3.max(data, d => d.population)])
-    .range([0, 40])
-
-  var circles = svg
-    .selectAll('.ball')
-    .data(data)
-    .enter()
-    .append('g')
-    .attr('class', 'ball')
-    .attr('transform', d => {
-      return `translate(${xScale(d.cost)}, ${yScale(d.expectancy)})`
+    data.forEach(company => {
+      company.values.forEach(d => {
+        d.date = parseTime(d.date)
+        d.close = +d.close
+      })
     })
 
+    var xScale = d3.scaleTime()
+      .domain([
+        d3.min(data, co => d3.min(co.values, d => d.date)),
+        d3.max(data, co => d3.max(co.values, d => d.date)),
+      ])
+      .range([0, width])
 
-  circles
-    .append('circle')
-      .attr('cx', 0)
-      .attr('cy', 0)
-      .attr('r', d => rScale(d.population))
-      .style('fill-opacity', 0.5)
-      .style('fill', 'steelblue')
+    svg
+      .append('g')
+        .attr('transform', `translate(0, ${height})`)
+      .call(d3.axisBottom(xScale).ticks(8))
 
-  circles
-    .append('text')
-    .style('text-anchor', 'middle')
-    .style('fill', 'black')
-    .attr('y', 4)
-    .text(d => d.code)
+    var yScale = d3.scaleLinear()
+      .domain([
+        d3.min(data, co => d3.min(co.values, d => d.close)),
+        d3.max(data, co => d3.max(co.values, d => d.close))
+      ])
+      .range([height, 0])
 
+    svg
+      .append('g')
+      .call(d3.axisLeft(yScale))
+
+    var line = d3.line()
+      .x(d => {
+        console.log('x', d);
+        return xScale(d.date)
+      })
+      .y(d => {
+        console.log('y', d);
+        return yScale(d.close)
+      })
+      .curve(d3.curveCatmullRom.alpha(0.5))
+
+    svg
+      .selectAll('.line')
+      .data(data)
+      .enter()
+      .append('path')
+      .attr('class', 'line')
+      .attr('d', d => {
+        console.log(d);
+        return line(d.values);
+      })
+      .style('stroke', (d, i) =>['#FF9900', '#3369E8'][i])
+      .style('stroke-width', 2)
+      .style('fill', 'none')
 })
 
 function responsivefy(svg){
